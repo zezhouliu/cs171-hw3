@@ -22,14 +22,58 @@
             root = $("<div></div>")
             root.html(data.responseText)
 
-            var content = root.find("#content"); // find all the nodes that have ID "content"
-            var h2s = content.find(".mw-headline"); // search in all "content" nodes for nodes of class ".mw-headline"
+            var content = root.find(".wikitable"); // find all the nodes that have class "wikitable"
+            var trs = content.find("tr").not('tr:first'); // search in all "content" nodes for nodes of type tr
+           
+            $.each(trs, function (index, value) {
 
-            $.each(h2s, function(index, value) {
-                console.log($(value).text()); // print text
+                // remove all the columns past Maddison
+                $(this).find("td:gt(5)").remove();
+                    
+                //console.log($(value).text()); // print text
             });
+
+            var filtered = trs.filter(function () {
+                // only keep the rows that are not all empty
+                // and the year is greater than 0 and less than 2050
+                var year = $(this).find("td:first p").html();
+                return $(this).find('td:empty').length < 5 && year >= 0 && year <= 2050;
+            });
+
+            var output = new Array();
+            $.each(filtered, function (index, value) {
+
+                var row = "";
+
+                $.each($(this).find("td"), function (i, v) {
+                    //console.log(i);
+                    if (i == 0) {
+                        var year = $(this).find("p").html();
+                        //console.log("Year: " + year);
+                        row = row + year;
+                        //console.log(">>>>>>" + row);
+                    }
+                    else {
+                        var num = convertToInt($(this).text());
+                        if (num) {
+                            //console.log("Num: " + num);
+                            row = row + "," + parseInt(num);
+                            //console.log(">>>>>>" + row);
+                        }
+                        else {
+                            row = row + ",";
+                        }
+                    }
+
+
+                });
+
+                output.push(row);
+            });
+
+            console.log(filtered);
 			
-			saveToFile(["Hello World"],"test.txt")
+            saveToFile(output, "dataExportWiki.csv");
         },
         error: function() {
             return console.log("error");
