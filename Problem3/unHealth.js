@@ -1,5 +1,11 @@
+
+
+/* * * * * * * * * 
+ * Set up all the container information
+ * * * * * * * * */
 var bbDetail, bbOverview, dataSet, svg;
 
+// set up margins
 var margin = {
     top: 50,
     right: 50,
@@ -7,26 +13,27 @@ var margin = {
     left: 100
 };
 
+// width and height of the visualization
 var width = 960 - margin.left - margin.right;
-
 var height = 800 - margin.bottom - margin.top;
 
+// container for the overview chart
 bbOverview = {
-    x: 0,
-    y: 10,
+    x: 50,
+    y: 100,
     w: width,
-    h: 100
+    h: 100 + 100
 };
 
+// container for the detail chart
 bbDetail = {
     x: 0,
-    y: 150,
+    y: bbOverview.y + bbOverview.h,
     w: width,
     h: 500
 };
 
-dataSet = [];
-
+// Set up area for the overview graph
 svg = d3.select("#visUN").append("svg").attr({
     width: width + margin.left + margin.right,
     height: height + margin.top + margin.bottom
@@ -34,6 +41,7 @@ svg = d3.select("#visUN").append("svg").attr({
         transform: "translate(" + margin.left + "," + margin.top + ")"
 });
 
+// Set up the area for the detailed graph, also make sure its clipped
 svg.append("defs").append("clipPath")
     .attr("id", "clip")
     .append("rect")
@@ -43,15 +51,18 @@ svg.append("defs").append("clipPath")
 
 d3.csv("ewec.csv", function (data) {
 
+    // parse the dates and convert data formats
     var parseDate = d3.time.format("%Y%m%d").parse;
     data.forEach(function (d, i) {
         d.date = parseDate(d.date);
         d.health = convertToInt(d.health);
     });
 
+    // calculate min and max years for the scales and axis
     var min_year = d3.min(data, function (d) { return d.date; });
     var max_year = d3.max(data, function (d) { return d.date; });
 
+    // store the overview axis/scales and the detail axis/scales
     var xAxis, xScale, yAxis, yScale;
     var xDetailAxis, xDetailScale, yDetailAxis, yDetailScale;
 
@@ -73,8 +84,10 @@ d3.csv("ewec.csv", function (data) {
     yDetailedScale = d3.scale.linear().domain([max_value, min_value]).range([bbDetail.y, bbDetail.h]);
     yDetailedAxis = d3.svg.axis().scale(yDetailedScale).orient("left").ticks(3);
 
+    // color function, not necessary for not but in case we increase color
     var color = d3.scale.category10();
 
+    // calculate the line for the overview line
     var valueline = d3.svg.line()
                     .x(function (d) {
                         return xScale(d.date);
@@ -83,7 +96,8 @@ d3.csv("ewec.csv", function (data) {
                         return yScale(d.health);
                     });
 
-    var detailline = d3.svg.area()
+    // calculate the area and the line for the detail graph
+    var detailarea = d3.svg.area()
                     .x(function (d) {
                         return xDetailedScale(d.date);
                     })
@@ -98,7 +112,6 @@ d3.csv("ewec.csv", function (data) {
         .style("stroke", color(0))
         .attr("d", valueline);
 
-    //var all_datapoints = d3.merge(datasets);
     var overviewdots = svg.selectAll("dot")
         .data(data)
         .enter().append("circle")
@@ -113,7 +126,7 @@ d3.csv("ewec.csv", function (data) {
         .attr("class", "detailArea")
         .style("stroke", color(0))
         .style("fill", color(0))
-        .attr("d", detailline);
+        .attr("d", detailarea);
 
     var detaileddots = svg.selectAll("dot")
         .data(data)
@@ -149,11 +162,10 @@ d3.csv("ewec.csv", function (data) {
 
     // function when brushed is selected
     var brushed = function (d, i) {
-        console.log(brush.extent());
         xDetailedScale.domain(brush.empty() ? xScale.domain() : brush.extent());
         detaileddots.attr("cx", function (d) { return xDetailedScale(d.date); })
             .attr("cy", function (d) { return yDetailedScale(d.health); });
-        svg.select(".detailArea").attr("d", detailline);
+        svg.select(".detailArea").attr("d", detailarea);
         svg.select(".x.detailed.axis").call(xDetailedAxis);
     };
 
@@ -161,9 +173,30 @@ d3.csv("ewec.csv", function (data) {
 
     svg.append("g").attr("class", "brush").call(brush)
       .selectAll("rect").attr({
-          height: bbOverview.h - 1,
-          transform: "translate(0,0)"
+          height: bbOverview.h - bbOverview.y,
+          transform: "translate(0," + bbOverview.y + ")"
       });
+
+    svg.append("text")
+        .attr("class", "event")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "15px")
+        .attr("fill", "teal")
+        .text("July 2012: Major Health Problems Linked to Poverty - http://www.nytimes.com/2011/07/10/us/10tthealth.html")
+        .on("click", function (d, i) {
+            console.log("clicked");
+            d3.selectAll("rect.extent")
+                .attr({
+                    x: bbOverview.x,
+                    y: 0,
+                    width: 100,
+                    height: bbOverview.h - bbOverview.y,
+                    transform: "translate(0," + bbOverview.y + ")"
+                });
+            console.log(d3.selectAll("rect.w"));
+        });
 
 });
 
