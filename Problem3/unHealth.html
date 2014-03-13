@@ -4,10 +4,22 @@
     <title></title>
     <script src="../libs/d3.v3.min.js"></script>
     <style>
+
+        circle {
+            clip-path: url(#clip);
+        }
+
+        path {
+            stroke-width: 2;
+        }
+
         .axis path,
         .axis line {
             fill: none;
-            stroke: lightgrey; }
+            stroke: lightgrey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
 
         .brush .extent {
             stroke: black;
@@ -20,17 +32,18 @@
 
         .timeArea {
             fill: steelblue;
-				}
+		}
 
         .path {
             stroke: steelblue;
+            stroke-width: 2;
             fill: none;
 
         }
 
         .overviewPath {
             stroke-width:1;
-
+            fill:none
         }
 
         .detailPath {
@@ -40,9 +53,11 @@
 
 
         .detailArea {
-            stroke: none;
-            fill:steelblue;
-            fill-opacity:0.5;
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: steelblue;
+            fill-opacity: 0.5;
+            clip-path: url(#clip);
         }
 
     </style>

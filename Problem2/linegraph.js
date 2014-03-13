@@ -140,13 +140,6 @@
             return color(d.type);
         });
 
-        // Add the valueline path.
-        svg.append("path")
-            .attr("class", "line")
-            .attr("d", valueline(data_USCensus, "USCensus"));
-            //.attr("un", valueline(data_populationBureau, "UN"))
-            //.attr("hyde", valueline(data_UN, "HYDE"))
-            //.attr("maddison", valueline(data_Maddison, "Maddison"));
 
         // Add the X Axis
 		svg.append("g")
