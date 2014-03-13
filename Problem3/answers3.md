@@ -3,4 +3,4 @@
 2.  Name the HTML element (type and class) that is used for representing the selection.  
   The selection area that is added is the "extent" class inside the "brush" class.  The "extent" class is of type rect.  
 3.  What are the other DOM elements for?  
-  There are two other DOM elements added: one is of the "resize e" class and the other is of the "resize w" class.  The "resize w" class allows you to increase or decrease the selection on the left side and the "resize e" class allows you to increase of decrease the selection on the right side.  These two are of the "g" type.
+  There are two other DOM elements added: one is of the "resize" and "e" classes and the other is of the "resize" and "w" classes.  The "resize" "w" classes allows you to increase or decrease the selection on the left side and the "resize" "e" classes allows you to increase of decrease the selection on the right side.  These two are of the "g" type.
