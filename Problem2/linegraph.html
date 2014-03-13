@@ -4,10 +4,20 @@
     <title></title>
     <script src="../libs/d3.v3.min.js"></script>
     <style>
+
+        path {
+            stroke: steelblue;
+            stroke-width: 2;
+            fill: none;
+        }
+
         .axis path,
         .axis line {
             fill: none;
-            stroke: lightgrey; }
+            stroke: lightgrey;
+            stroke-width: 1;
+            shape-rendering: crispEdges;
+        }
 
         .dataArea {
             stroke: 1px steelblue;

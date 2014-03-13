@@ -24,13 +24,20 @@
 
             var content = root.find(".wikitable"); // find all the nodes that have class "wikitable"
             var trs = content.find("tr").not('tr:first'); // search in all "content" nodes for nodes of type tr
-           
-            $.each(trs, function (index, value) {
+            var th = content.find("tr").eq(0);
 
+            console.log(th);
+
+            $.each(trs, function (index, value) {
                 // remove all the columns past Maddison
                 $(this).find("td:gt(5)").remove();
                     
-                //console.log($(value).text()); // print text
+            });
+
+            $.each(th, function (index, value) {
+                // remove all the columns past Maddison
+                $(this).find("th:gt(5)").remove();
+
             });
 
             var filtered = trs.filter(function () {
@@ -41,6 +48,10 @@
             });
 
             var output = new Array();
+
+            // push headers manually
+            output.push("year,USCensus,PopulationBureau,UN,HYDE,Maddison");
+
             $.each(filtered, function (index, value) {
 
                 var row = "";
@@ -70,10 +81,8 @@
 
                 output.push(row);
             });
-
-            console.log(filtered);
 			
-            saveToFile(output, "dataExportWiki.csv");
+            saveToFile(output, "timeline.csv");
         },
         error: function() {
             return console.log("error");
