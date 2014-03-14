@@ -63,7 +63,7 @@
 
         // define the scale and axis for y
         yScale = d3.scale.linear().domain([max_value, min_value]).range([0, height]);
-        yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(5);
+        yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(7);
 
         // filter out the values for each category
         var data_USCensus = data.filter(function (d, i) {

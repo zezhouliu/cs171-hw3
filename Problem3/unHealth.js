@@ -182,22 +182,73 @@ d3.csv("ewec.csv", function (data) {
         .attr("x", 0)
         .attr("y", 20)
         .attr("font-family", "sans-serif")
-        .attr("font-size", "15px")
+        .attr("font-size", "10px")
         .attr("fill", "teal")
-        .text("July 2012: Major Health Problems Linked to Poverty - http://www.nytimes.com/2011/07/10/us/10tthealth.html")
+        .text("Feb 2011: Women's Heart Disease Prevention - http://www.examiner.com/article/women-s-heart-disease-prevention-feb-1-2012-national-wear-red-day")
         .on("click", function (d, i) {
-            console.log("clicked");
-            d3.selectAll("rect.extent")
-                .attr({
-                    x: bbOverview.x,
-                    y: 0,
-                    width: 100,
-                    height: bbOverview.h - bbOverview.y,
-                    transform: "translate(0," + bbOverview.y + ")"
-                });
-            console.log(d3.selectAll("rect.w"));
+
+            // generate upper and lowerbound
+            var july2012 = "20120201";
+            var date = parseDate(july2012);
+            var lbound = d3.time.month.offset(date, -2);
+            var ubound = d3.time.month.offset(date, 2);
+
+            // create brushing range
+            brush.extent([lbound, ubound]);
+            svg.selectAll(".brush").call(brush);
+            xDetailedScale.domain([lbound, ubound]);
+            detaileddots.attr("cx", function (d) { return xDetailedScale(d.date); })
+            .attr("cy", function (d) { return yDetailedScale(d.health); });
+            svg.select(".detailArea").attr("d", detailarea);
+            svg.select(".x.detailed.axis").call(xDetailedAxis);
         });
 
+
+    svg.append("text")
+        .attr("class", "event")
+        .attr("x", 0)
+        .attr("y", 50)
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "10px")
+        .attr("fill", "teal")
+        .text("August 2012: Free Contraception for Women, Obama Health Care- http://www.cbsnews.com/news/free-contraception-for-women-provision-of-obama-health-care-law-starts-today/")
+        .on("click", function (d, i) {
+
+            // generate upper and lowerbound
+            var july2012 = "20120801";
+            var date = parseDate(july2012);
+            var lbound = d3.time.month.offset(date, -2);
+            var ubound = d3.time.month.offset(date, 2);
+
+            // create brushing range
+            brush.extent([lbound, ubound]);
+            svg.selectAll(".brush").call(brush);
+            xDetailedScale.domain([lbound, ubound]);
+            detaileddots.attr("cx", function (d) { return xDetailedScale(d.date); })
+            .attr("cy", function (d) { return yDetailedScale(d.health); });
+            svg.select(".detailArea").attr("d", detailarea);
+            svg.select(".x.detailed.axis").call(xDetailedAxis);
+        });
+
+    svg.append("text")
+        .attr("x", (width - 50) / 2)
+        .attr("y", bbDetail.h + 50)
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "15px")
+        .attr("fill", "black")
+        .text("Date/Time (months)");
+
+    svg.append("text")
+        .attr("transform", function (d) {
+            return "rotate(-90)"
+        })
+        .attr("x", -250)
+        .attr("y", -75)
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "15px")
+        .attr("fill", "black")
+        .text("tweets")
+        ;
 });
 
 var convertToInt = function(s) {
