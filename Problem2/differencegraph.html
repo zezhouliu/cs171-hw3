@@ -19,11 +19,27 @@
         }
 
         .dataArea {
-            stroke: 1px steelblue;
+            stroke: steelblue;
             fill:steelblue;
             fill-opacity:0.5;
             clip-path: url(#clip);
         }
+
+        .brush .extent {
+            stroke: black;
+            fill-opacity: 0.125;
+            shape-rendering: crispEdges;
+        }
+
+        .brush .handle {
+            stroke: black;
+            fill-opacity: 0.125;
+        }
+
+        circle {
+            clip-path: url(#clip);
+        }
+
 
 
     </style>
