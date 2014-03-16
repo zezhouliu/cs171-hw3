@@ -12,7 +12,7 @@
 
     width = 960 - margin.left - margin.right;
 
-    height = 1000 - margin.bottom - margin.top;
+    height = 1300 - margin.bottom - margin.top;
 
     bbVis = {
         x: 0 + 100,
@@ -27,6 +27,14 @@
         y: bbVis.y + bbVis.h + 100,
         w: width,
         h: 500
+    };
+
+    // container for the std dev
+    bbSTDDevAve = {
+        x: 0,
+        y: bbSTDDev.y + bbSTDDev.h,
+        w: width,
+        h: 1000
     };
 
     dataSet = [];
@@ -98,6 +106,7 @@
         stats.count = [];
         stats.sum = [];
         stats.stddev = [];
+        stats.stddevave = [];
 
         // grab elements_array
         data.forEach(function (d, i) {
@@ -106,6 +115,7 @@
             stats.count.push(0);
             stats.sum.push(0);
             stats.stddev.push(0);
+            stats.stddevave.push(0);
         });
 
         var estimates = color.domain().map(function (name) {
@@ -171,6 +181,8 @@
 
             // calculate std dev
             stats.stddev[i] = std_dev(d);
+
+            stats.stddevave[i] = stats.stddev[i] / stats.ave[i];
         });
 
         var xAxis, xScale, yAxis, yScale, ySTDScale, ySTDAxis;
@@ -183,6 +195,10 @@
         xSTDScale = d3.scale.linear().domain(d3.extent(data, function (d, i) { return d.year; })).range([0, bbVis.w]);
         xSTDAxis = d3.svg.axis().scale(xSTDScale).orient("bottom").ticks(5);
 
+        // define the scale and axis for x
+        xSTDAveScale = d3.scale.linear().domain(d3.extent(data, function (d, i) { return d.year; })).range([0, bbVis.w]);
+        xSTDAveAxis = d3.svg.axis().scale(xSTDScale).orient("bottom").ticks(5);
+
         var min_value = 0;
         var max_value = d3.max(estimates, function (c) { return d3.max(c.values, function (v) { return v.value; }); });
 
@@ -193,6 +209,10 @@
         // define the scale and axis for std dev
         ySTDScale = d3.scale.linear().domain(d3.extent(stats.stddev)).range([bbSTDDev.h, bbSTDDev.y]);
         ySTDAxis = d3.svg.axis().scale(ySTDScale).orient("left").ticks(7);
+
+        // define the scale and axis for std dev
+        ySTDAveScale = d3.scale.linear().domain(d3.extent(stats.stddevave)).range([bbSTDDevAve.h, bbSTDDevAve.y]);
+        ySTDAveAxis = d3.svg.axis().scale(ySTDAveScale).orient("left").ticks(7);
 
 
         // Add the X Axis
@@ -260,8 +280,6 @@
         var std = svg.append("g")
             .attr("class", "std-point");
 
-        console.log(stats);
-
         std.selectAll(".circle.std")
             .data(stats.stddev)
             .enter()
@@ -269,6 +287,21 @@
             .attr("class", "circle std")
             .attr("cx", function (d) { return xScale(stats.years[stats.stddev.indexOf(d)]); })
             .attr("cy", function (d, i) { return ySTDScale(d); })
+            .attr("year", 1994)
+            .attr("r", 2)
+            .attr("fill", "black")
+            .attr("stroke", "steelblue");
+
+        var std = svg.append("g")
+            .attr("class", "std-point");
+
+        std.selectAll(".circle.stdave")
+            .data(stats.stddevave)
+            .enter()
+            .append("circle")
+            .attr("class", "circle std ave")
+            .attr("cx", function (d) { console.log(d); return xScale(stats.years[stats.stddevave.indexOf(d)]); })
+            .attr("cy", function (d, i) { return ySTDAveScale(d); })
             .attr("year", 1994)
             .attr("r", 2)
             .attr("fill", "black")
@@ -284,6 +317,17 @@
         svg.append("g")
             .attr("class", "y axis")
             .call(ySTDAxis);
+
+        // STD Deviation Graph
+        // Add the X Axis for STD Dev
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + bbSTDDevAve.h + ")")
+            .call(xSTDAveAxis);
+        // Add the Y Axis
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(ySTDAveAxis);
 
 
         // function when brushed is selected
