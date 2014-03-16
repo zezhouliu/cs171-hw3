@@ -293,7 +293,7 @@
             .attr("stroke", "steelblue");
 
         var std = svg.append("g")
-            .attr("class", "std-point");
+            .attr("class", "std-p");
 
         std.selectAll(".circle.ave")
             .data(stats.stddevave)
