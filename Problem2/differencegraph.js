@@ -24,7 +24,7 @@
     // container for the std dev
     bbSTDDev = {
         x: 0,
-        y: bbVis.y + bbVis.h + 100,
+        y: bbVis.y + 100,
         w: width,
         h: 500
     };
