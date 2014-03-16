@@ -295,11 +295,11 @@
         var std = svg.append("g")
             .attr("class", "std-point");
 
-        std.selectAll(".circle.stdave")
+        std.selectAll(".circle.ave")
             .data(stats.stddevave)
             .enter()
             .append("circle")
-            .attr("class", "circle std ave")
+            .attr("class", "circle ave")
             .attr("cx", function (d) { console.log(d); return xScale(stats.years[stats.stddevave.indexOf(d)]); })
             .attr("cy", function (d, i) { return ySTDAveScale(d); })
             .attr("year", 1994)
